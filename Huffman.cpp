@@ -166,40 +166,38 @@ int main(int argc, char *argv[])
 
 	inputFile.open(inputFileName);
 	ofstream binaryFile(outputFileName, ios::binary);
-	if (inputFile.is_open() && binaryFile.is_open())
-	{
-		string text = readFileContent(inputFile);
-		inputFile.close();
-
-		// main logic
-		auto freqmap = buildFreqMap(text);
-		Node *hofftree = buildTree(freqmap);
-		auto codemap = generateCharCodes(hofftree);
-		string coded = getEncodedFileContent(text, codemap);
-		// cout << decodeUsingTree(hofftree, coded) << endl;
-
-		// string coded = "0100000101000001";
-		// Each bute in `coded` represents a bit in the compressed file
-		// which we want to put in our binary file
-		// BYTE BY BYTE
-		int count = 0;
-		for (int i = 0; i < coded.size(); i += 8)
-		{
-			// We compress the 8 bit values (which occur in 8 bytes in the coded string)
-			// into an actual char of 8 bits
-			// and then put that in the compressed binary file
-			string byteStr = coded.substr(i, 8);
-			char byte = stoi(byteStr, nullptr, 2);
-			count++;
-			binaryFile.write(&byte, sizeof(char));
-		}
-		binaryFile.flush();
-		binaryFile.close();
-	}
-	else
+	if (!inputFile.is_open() || !binaryFile.is_open())
 	{
 		cerr << "Error! Something went wrong.";
 	}
+
+	string text = readFileContent(inputFile);
+	inputFile.close();
+
+	// main logic
+	auto freqmap = buildFreqMap(text);
+	Node *hofftree = buildTree(freqmap);
+	auto codemap = generateCharCodes(hofftree);
+	string coded = getEncodedFileContent(text, codemap);
+	// cout << decodeUsingTree(hofftree, coded) << endl;
+
+	// string coded = "0100000101000001";
+	// Each byte in `coded` represents a bit in the compressed file
+	// which we want to put in our binary file
+	// BYTE BY BYTE
+	int count = 0;
+	for (int i = 0; i < coded.size(); i += 8)
+	{
+		// We compress the 8 bit values (which occur in 8 bytes in the coded string)
+		// into an actual char of 8 bits
+		// and then put that in the compressed binary file
+		string byteStr = coded.substr(i, 8);
+		char byte = stoi(byteStr, nullptr, 2);
+		count++;
+		binaryFile.write(&byte, sizeof(char));
+	}
+	binaryFile.flush();
+	binaryFile.close();
 
 	return 0;
 }
