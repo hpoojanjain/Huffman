@@ -41,41 +41,6 @@ string getEncodedFileContent(string &sourceFileContent, unordered_map<char, stri
 	return encodedFileContent;
 }
 
-string decodeUsingTree(Node *root, string coded)
-{
-	// 1010011001010001101010101010110
-	//  a-> 101, c -> 0001
-	if (isLeaf(root))
-	{
-		// Handling the case when the file only contains one character
-		// So the path to that character (ie, character code for it) is empty string
-		char c = root->ch;
-		int freq = root->freq;
-		string dec = "";
-		while (freq--)
-		{
-			dec += c;
-		}
-		return dec;
-	}
-	Node *temp = root;
-	string decoded = "";
-	for (auto &ch : coded)
-	{
-		if (ch == '1')
-			temp = temp->right;
-		else
-			temp = temp->left;
-
-		if (isLeaf(temp))
-		{
-			decoded += (char)temp->ch;
-			temp = root;
-		}
-	}
-	return decoded;
-}
-
 unordered_map<char, int> buildFreqMap(string &text)
 {
 	unordered_map<char, int> freq;
@@ -132,6 +97,57 @@ unordered_map<char, string> generateCharCodes(Node *root)
 	}
 	return charCodes;
 }
+
+// ----------------------------
+// The following functions are concerned with decoding the encoded
+// string content. This is a work in progress.
+
+string decodeUsingTree(Node *root, string coded)
+{
+	// 1010011001010001101010101010110
+	//  a-> 101, c -> 0001
+	if (isLeaf(root))
+	{
+		// Handling the case when the file only contains one character
+		// So the path to that character (ie, character code for it) is empty string
+		char c = root->ch;
+		int freq = root->freq;
+		string dec = "";
+		while (freq--)
+		{
+			dec += c;
+		}
+		return dec;
+	}
+	Node *temp = root;
+	string decoded = "";
+	for (auto &ch : coded)
+	{
+		if (ch == '1')
+			temp = temp->right;
+		else
+			temp = temp->left;
+
+		if (isLeaf(temp))
+		{
+			decoded += (char)temp->ch;
+			temp = root;
+		}
+	}
+	return decoded;
+}
+
+string serializeMap(unordered_map<char, int> freq)
+{
+	string serialized = "";
+	for (auto k : freq)
+	{
+		serialized += k.first + " " + k.second;
+	}
+	return serialized;
+}
+
+// -------------------
 
 int main(int argc, char *argv[])
 {
