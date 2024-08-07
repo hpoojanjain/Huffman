@@ -133,6 +133,27 @@ unordered_map<char, string> generateCharCodes(Node *root)
 	return charCodes;
 }
 
+string readFileContent(ifstream &inputFile)
+{
+	string text = "";
+	string line;
+
+	bool firstLine = true;
+	while (getline(inputFile, line))
+	{
+		if (firstLine)
+		{
+			firstLine = false;
+		}
+		else
+		{
+			text += "\n";
+		}
+		text += line;
+	}
+	return text;
+}
+
 int main(int argc, char *argv[])
 {
 	ifstream inputFile;
@@ -147,22 +168,7 @@ int main(int argc, char *argv[])
 	ofstream binaryFile(outputFileName, ios::binary);
 	if (inputFile.is_open() && binaryFile.is_open())
 	{
-		string text = "";
-		string line;
-
-		bool firstLine = true;
-		while (getline(inputFile, line))
-		{
-			if (firstLine)
-			{
-				firstLine = false;
-			}
-			else
-			{
-				text += "\n";
-			}
-			text += line;
-		}
+		string text = readFileContent(inputFile);
 		inputFile.close();
 
 		// main logic
