@@ -91,10 +91,10 @@ unordered_map<char, string> generateCharCodes(Node *root)
 	dfs(root, helper, charCodes);
 	// now we know what characters to map to what codes
 	// eg, c->101, a -> 11100110 etc
-	for (auto k : charCodes)
-	{
-		cout << (int)k.first << ":" << k.second << endl;
-	}
+	// for (auto k : charCodes)
+	// {
+	// 	cout << (int)k.first << ":" << k.second << endl;
+	// }
 	return charCodes;
 }
 
@@ -142,12 +142,47 @@ string serializeMap(unordered_map<char, int> freq)
 	string serialized = "";
 	for (auto k : freq)
 	{
-		serialized += k.first + " " + k.second;
+		cout << k.first << ":" << k.second << endl;
+		serialized.push_back(k.first);
+		serialized.append(" ");
+		serialized.append(to_string(k.second));
+		serialized.append(" ");
 	}
+	serialized.append("\n\n\n");
 	return serialized;
 }
 
+// substring of compressed file text, from beginning to index of "\n\n"
+unordered_map<char, int> parseIntoMap(string s)
+{
+	unordered_map<char, int> freq;
+	// todo
+
+	return freq;
+}
+
 // -------------------
+
+string readFileContent(ifstream &inputFile)
+{
+	string text = "";
+	string line;
+
+	bool firstLine = true;
+	while (getline(inputFile, line))
+	{
+		if (firstLine)
+		{
+			firstLine = false;
+		}
+		else
+		{
+			text += "\n";
+		}
+		text += line;
+	}
+	return text;
+}
 
 int main(int argc, char *argv[])
 {
@@ -163,22 +198,7 @@ int main(int argc, char *argv[])
 	ofstream binaryFile(outputFileName, ios::binary);
 	if (inputFile.is_open() && binaryFile.is_open())
 	{
-		string text = "";
-		string line;
-
-		bool firstLine = true;
-		while (getline(inputFile, line))
-		{
-			if (firstLine)
-			{
-				firstLine = false;
-			}
-			else
-			{
-				text += "\n";
-			}
-			text += line;
-		}
+		string text = readFileContent(inputFile);
 		inputFile.close();
 
 		// main logic
@@ -186,6 +206,15 @@ int main(int argc, char *argv[])
 		Node *hofftree = buildTree(freqmap);
 		auto codemap = generateCharCodes(hofftree);
 		string coded = getEncodedFileContent(text, codemap);
+
+		string serializedMap = serializeMap(freqmap);
+		cout << serializedMap << endl;
+		// for (auto ch : serializedMap)
+		// 	binaryFile.write(&ch, sizeof(char));
+
+		// todo: uncomment when completely implemented
+		// binaryFile.write(serializedMap.c_str(), serializedMap.size());
+
 		// cout << decodeUsingTree(hofftree, coded) << endl;
 
 		// string coded = "0100000101000001";
