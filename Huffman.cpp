@@ -137,10 +137,14 @@ int main(int argc, char *argv[])
 {
 	ifstream inputFile;
 	string inputFileName = argv[1];
-	string outputFileName = argv[2];
+	string outputFileName;
+	if (argc > 2)
+		outputFileName = argv[2];
+	else
+		outputFileName = "compressed_" + inputFileName.substr(0, inputFileName.size() - 4) + ".bin";
 
 	inputFile.open(inputFileName);
-	ofstream binaryFile((string)argv[2] + ".bin", ios::binary);
+	ofstream binaryFile(outputFileName, ios::binary);
 	if (inputFile.is_open() && binaryFile.is_open())
 	{
 		string text = "";
